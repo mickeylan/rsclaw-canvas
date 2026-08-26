@@ -33,7 +33,7 @@ export function skillSlug(skill) {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '')
       .slice(0, 50) || 'custom-skill'
-  return `lumx-${base}-${stableHash(id).slice(0, 8)}`
+  return `rsclaw-${base}-${stableHash(id).slice(0, 8)}`
 }
 
 export function skillActivationDescription(skill) {
@@ -54,10 +54,10 @@ export function buildSkillMarkdown(skill) {
 name: ${yamlScalar(slug)}
 description: ${yamlScalar(skillActivationDescription(skill))}
 metadata:
-  lumx-id: ${yamlScalar(skill.id)}
-  lumx-display-name: ${yamlScalar(skill.name)}
-  lumx-kind: ${yamlScalar(skill.kind === 'system' ? 'system' : 'custom')}
-  lumx-revision: ${yamlScalar(revision)}
+  rsclaw-id: ${yamlScalar(skill.id)}
+  rsclaw-display-name: ${yamlScalar(skill.name)}
+  rsclaw-kind: ${yamlScalar(skill.kind === 'system' ? 'system' : 'custom')}
+  rsclaw-revision: ${yamlScalar(revision)}
 ---
 
 # ${String(skill.name)
@@ -156,7 +156,7 @@ export function createSingleSkillActivationMiddleware({
   }))
   let activeSkill = null
   return createMiddleware({
-    name: 'LumxSingleSkillActivation',
+    name: 'RsclawSingleSkillActivation',
     async wrapToolCall(request, handler) {
       const toolName = request?.toolCall?.name || request?.tool?.name
       if (toolName !== 'read_file') return handler(request)

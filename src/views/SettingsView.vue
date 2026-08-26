@@ -124,7 +124,7 @@
           <div class="skill-group__head">
             <div>
               <h3>系统 Skills</h3>
-              <p>由 LumxAI 提供，规则内容受保护且不可修改。</p>
+              <p>由 rsclaw-canvas 提供，规则内容受保护且不可修改。</p>
             </div>
             <span v-if="runtimeCapabilities.systemSkillDeveloperMode" class="skill-dev-badge">
               开发模式

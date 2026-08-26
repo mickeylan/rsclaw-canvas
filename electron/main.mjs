@@ -41,7 +41,7 @@ const windowAppearance = {
     backgroundColor: '#ffffff'
   }
 }
-const legacyUserData = path.join(app.getPath('appData'), 'com.lumx.desktop')
+const legacyUserData = path.join(app.getPath('appData'), 'com.rsclaw.canvas')
 app.setPath('userData', legacyUserData)
 nativeTheme.themeSource = 'dark'
 
@@ -146,7 +146,7 @@ function createWindow() {
       return
     }
     event.preventDefault()
-    mainWindow.webContents.send('lumx:close-requested')
+    mainWindow.webContents.send('rsclaw:close-requested')
   })
   mainWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
   mainWindow.webContents.on('did-fail-load', (_event, errorCode, errorDescription) => {
@@ -231,18 +231,18 @@ function installApplicationMenu() {
 }
 
 function registerIpc() {
-  ipcMain.on('lumx:set-close-guard', (event, enabled) => {
+  ipcMain.on('rsclaw:set-close-guard', (event, enabled) => {
     if (event.sender !== mainWindow?.webContents) return
     windowCloseGuardEnabled = Boolean(enabled)
   })
-  ipcMain.handle('lumx:set-appearance', (_event, mode) => {
+  ipcMain.handle('rsclaw:set-appearance', (_event, mode) => {
     applyWindowAppearance(mode)
   })
-  ipcMain.handle('lumx:close-window', () => {
+  ipcMain.handle('rsclaw:close-window', () => {
     allowWindowClose = true
     mainWindow?.close()
   })
-  ipcMain.handle('lumx:invoke', async (_event, command, args = {}) => {
+  ipcMain.handle('rsclaw:invoke', async (_event, command, args = {}) => {
     if (command === 'dialog_open') return openDialog(args.options || {})
     if (command === 'dialog_save') return saveDialog(args.options || {})
     if (command === 'copy_image_to_clipboard') return copyImageToClipboard(args.sourcePath)
@@ -647,7 +647,7 @@ function parseJson(value, fallback) {
 
 function forwardEvent(event) {
   if (mainWindow && !mainWindow.isDestroyed()) {
-    mainWindow.webContents.send('lumx:agent-event', event)
+    mainWindow.webContents.send('rsclaw:agent-event', event)
   }
 }
 

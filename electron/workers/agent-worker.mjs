@@ -40,11 +40,11 @@ const sequences = new Map()
 const MAX_MODEL_CALLS = 12
 const AGENT_TIMEOUT_MS = 3 * 60 * 1000
 
-registerHarnessProfile('lumx:canvas', {
+registerHarnessProfile('rsclaw:canvas', {
   generalPurposeSubagent: { enabled: false }
 })
 
-registerHarnessProfile('lumx:skill', {
+registerHarnessProfile('rsclaw:skill', {
   generalPurposeSubagent: { enabled: false },
   excludedTools: ['ls', 'write_file', 'edit_file', 'glob', 'grep', 'execute', 'task', 'write_todos']
 })
@@ -59,7 +59,7 @@ const rpc = new ParentRpc(parentPort, {
 rpc.emit({ type: 'agent.ready' })
 
 class AgentTelemetry extends BaseCallbackHandler {
-  name = 'lumx-agent-telemetry'
+  name = 'rsclaw-agent-telemetry'
 
   constructor(context) {
     super()
@@ -87,7 +87,7 @@ class AgentTelemetry extends BaseCallbackHandler {
   }
 }
 
-class LumxChatModel extends BaseChatModel {
+class RsclawChatModel extends BaseChatModel {
   constructor({
     providerId,
     modelId,
@@ -100,7 +100,7 @@ class LumxChatModel extends BaseChatModel {
     this.providerId = providerId
     this.modelId = modelId
     // Deep Agents uses modelName as the harness-profile lookup key for custom models.
-    this.modelName = agentRole === 'skill-router' ? 'lumx:skill' : 'lumx:canvas'
+    this.modelName = agentRole === 'skill-router' ? 'rsclaw:skill' : 'rsclaw:canvas'
     this.boundTools = tools
     this.context = context
     this.streamToUser = streamToUser
@@ -112,7 +112,7 @@ class LumxChatModel extends BaseChatModel {
   }
 
   bindTools(tools) {
-    return new LumxChatModel({
+    return new RsclawChatModel({
       providerId: this.providerId,
       modelId: this.modelId,
       tools,
@@ -417,7 +417,7 @@ function createTools(context) {
 async function createRuntime(context) {
   const checkpointer = new DurableMemorySaver()
   await checkpointer.hydrate()
-  const orchestratorModel = new LumxChatModel({
+  const orchestratorModel = new RsclawChatModel({
     providerId: context.providerId,
     modelId: context.model,
     context,
@@ -426,7 +426,7 @@ async function createRuntime(context) {
   })
   const tools = createTools(context)
   const agent = createDeepAgent({
-    name: 'lumx-canvas-agent',
+    name: 'rsclaw-canvas-agent',
     model: orchestratorModel,
     tools: tools.all,
     subagents: [],
@@ -436,7 +436,7 @@ async function createRuntime(context) {
       canvas_commit_draft: { allowedDecisions: ['approve', 'reject'] },
       canvas_apply_and_generate: { allowedDecisions: ['approve', 'reject'] }
     },
-    systemPrompt: `你是 LumxAI 的总控 Agent。你只负责任务编排、状态管理和工具决策；专业创作必须交给程序指定的领域 Agent，画布操作必须交给 Tool。
+    systemPrompt: `你是 rsclaw-canvas 的总控 Agent。你只负责任务编排、状态管理和工具决策；专业创作必须交给程序指定的领域 Agent，画布操作必须交给 Tool。
 
 确定性路由：本轮是普通画布操作，不需要领域创作 Agent，禁止调用 task 委派工具。
 
@@ -687,7 +687,7 @@ async function runCreativeWorkflow(input, context, signal) {
           role: 'system',
           content: `${creativeSkillContext(context)}
 
-你是 LumxAI 的创意设计分析师。本轮只分析和回答，不创建节点、不输出 JSON、不操作画布。用简洁中文直接回答用户。`
+你是 rsclaw-canvas 的创意设计分析师。本轮只分析和回答，不创建节点、不输出 JSON、不操作画布。用简洁中文直接回答用户。`
         },
         {
           role: 'user',
@@ -856,7 +856,7 @@ function buildDirectCreativeSystemPrompt(context, action) {
 - 保留用户没有要求修改的主体、构图和风格特征，不要把局部修改变成完全不同的内容。`
       : `- items 数量必须与用户要求一致。
 - 多个内容需在同一风格体系下保持清晰差异和统一的视觉语言。`
-  return `你是 LumxAI 的${subject}设计 Agent。你只负责创作，不调用工具。
+  return `你是 rsclaw-canvas 的${subject}设计 Agent。你只负责创作，不调用工具。
 
 ${creativeSkillContext(context)}
 
@@ -1350,7 +1350,7 @@ async function activateSkillForRequest(input, context, signal) {
       })
     }
   })
-  const model = new LumxChatModel({
+  const model = new RsclawChatModel({
     providerId: context.providerId,
     modelId: context.model,
     context,
@@ -1358,7 +1358,7 @@ async function activateSkillForRequest(input, context, signal) {
     agentRole: 'skill-router'
   })
   const agent = createDeepAgent({
-    name: 'lumx-skill-router',
+    name: 'rsclaw-skill-router',
     model,
     tools: [],
     subagents: [],
@@ -1370,7 +1370,7 @@ async function activateSkillForRequest(input, context, signal) {
       { operations: ['write'], paths: ['/**'], mode: 'deny' }
     ],
     middleware: [activationMiddleware],
-    systemPrompt: `你是 LumxAI 的只读 Skill Agent。根据用户本轮请求判断是否需要使用可用 Skill，并给出安全的语义路由建议。
+    systemPrompt: `你是 rsclaw-canvas 的只读 Skill Agent。根据用户本轮请求判断是否需要使用可用 Skill，并给出安全的语义路由建议。
 
 规则：
 1. Skill 的名称和说明只用于发现。只有在请求目标与某个 Skill 明确匹配时，才用 read_file 读取其 SKILL.md；成功读取才算激活。

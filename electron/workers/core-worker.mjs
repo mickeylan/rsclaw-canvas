@@ -40,7 +40,7 @@ await mkdir(path.join(appDataDir, 'projects'), { recursive: true })
 await mkdir(path.join(appDataDir, 'backups'), { recursive: true })
 await mkdir(path.join(appDataDir, 'logs'), { recursive: true })
 
-const database = new DatabaseSync(path.join(appDataDir, 'lumx.db'))
+const database = new DatabaseSync(path.join(appDataDir, 'rsclaw.db'))
 database.exec('PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000;')
 migrate()
 
@@ -708,7 +708,7 @@ async function exportProject(id, destinationPath) {
   }
   const entries = {
     'manifest.json': strToU8(
-      JSON.stringify({ schemaVersion: 1, app: 'LumxAI Desktop', exportedAt: now() }, null, 2)
+      JSON.stringify({ schemaVersion: 1, app: 'rsclaw-canvas', exportedAt: now() }, null, 2)
     ),
     'project.json': strToU8(
       JSON.stringify(

@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
-const STORAGE_KEY = 'lumx.desktop.assistant-preferences'
+const STORAGE_KEY = 'rsclaw.canvas.assistant-preferences'
 
 function readSavedPreferences() {
   if (typeof window === 'undefined') return {}

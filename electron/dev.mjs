@@ -15,7 +15,7 @@ const electron = spawn(electronPath, ['.'], {
   shell: false,
   env: {
     ...process.env,
-    LUMX_SYSTEM_SKILL_DEV: process.env.LUMX_SYSTEM_SKILL_DEV || '1'
+    RSCLAW_SYSTEM_SKILL_DEV: process.env.RSCLAW_SYSTEM_SKILL_DEV || '1'
   }
 })
 

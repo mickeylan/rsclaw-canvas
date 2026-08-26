@@ -1,7 +1,7 @@
 import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 
-const STORAGE_KEY = 'lumx.desktop.appearance'
+const STORAGE_KEY = 'rsclaw.canvas.appearance'
 
 function readSavedMode() {
   if (typeof window === 'undefined') return 'dark'
@@ -20,7 +20,7 @@ export const useAppearanceStore = defineStore('appearance', () => {
       }
       if (typeof window !== 'undefined') {
         localStorage.setItem(STORAGE_KEY, value)
-        window.lumx?.setAppearance?.(value).catch(() => {})
+        window.rsclaw?.setAppearance?.(value).catch(() => {})
       }
     },
     { immediate: true }

@@ -73,7 +73,7 @@
           <div>
             <span class="assistant-panel__status" />
             <div>
-              <strong>LumxAI助手</strong>
+              <strong>rsclaw助手</strong>
             </div>
           </div>
           <a-button
@@ -399,7 +399,7 @@
               placement="top"
               placeholder="描述需求，输入 @ 提及节点；Enter 发送，Shift+Enter 换行"
               :disabled="assistantSending || Boolean(assistantApproval)"
-              aria-label="给 LumxAI 助手发送消息"
+              aria-label="给 rsclaw 助手发送消息"
             >
               <template #option="{ label, kindLabel, description }">
                 <div class="assistant-node-option">

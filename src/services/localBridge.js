@@ -5,25 +5,25 @@ import {
   withBuiltinProviderFields
 } from '../../electron/builtin-providers.mjs'
 
-const PROJECTS_KEY = 'lumx.desktop.preview.projects'
-const PROJECT_TRASH_KEY = 'lumx.desktop.preview.projectTrash'
-const PROVIDERS_KEY = 'lumx.desktop.preview.providers'
-const TASKS_KEY = 'lumx.desktop.preview.tasks'
-const SKILLS_KEY = 'lumx.desktop.preview.skills'
-const ASSISTANT_KEY = 'lumx.desktop.preview.assistant'
+const PROJECTS_KEY = 'rsclaw.canvas.projects'
+const PROJECT_TRASH_KEY = 'rsclaw.canvas.projectTrash'
+const PROVIDERS_KEY = 'rsclaw.canvas.providers'
+const TASKS_KEY = 'rsclaw.canvas.tasks'
+const SKILLS_KEY = 'rsclaw.canvas.skills'
+const ASSISTANT_KEY = 'rsclaw.canvas.assistant'
 
 export function isDesktopRuntime() {
   return isElectronRuntime()
 }
 
 function isElectronRuntime() {
-  return typeof window !== 'undefined' && Boolean(window.lumx)
+  return typeof window !== 'undefined' && Boolean(window.rsclaw)
 }
 
 async function invoke(command, args = {}) {
   if (isElectronRuntime()) {
     try {
-      return await window.lumx.invoke(command, args)
+      return await window.rsclaw.invoke(command, args)
     } catch (error) {
       throw new Error(desktopErrorMessage(error), { cause: error })
     }
@@ -170,13 +170,13 @@ export async function chooseAndExportProject(id, name) {
     throw new Error('项目导出需要在桌面应用中使用')
   }
   const safeName =
-    String(name || 'LumxAI 项目')
+    String(name || 'rsclaw-canvas 项目')
       .replace(/[<>:"/\\|?*\u0000-\u001f]/g, '-')
       .replace(/[.\s]+$/g, '')
-      .slice(0, 80) || 'LumxAI 项目'
+      .slice(0, 80) || 'rsclaw-canvas 项目'
   const destinationPath = await save({
-    defaultPath: `${safeName}.lumx`,
-    filters: [{ name: 'LumxAI 项目包', extensions: ['lumx'] }]
+    defaultPath: `${safeName}.rscanvas`,
+    filters: [{ name: 'rsclaw-canvas 项目包', extensions: ['rscanvas'] }]
   })
   if (!destinationPath) return null
   return invoke('export_project', { id, destinationPath })
@@ -189,7 +189,7 @@ export async function chooseAndImportProject() {
   const sourcePath = await open({
     multiple: false,
     directory: false,
-    filters: [{ name: 'LumxAI 项目包', extensions: ['lumx'] }]
+    filters: [{ name: 'rsclaw-canvas 项目包', extensions: ['rscanvas'] }]
   })
   if (!sourcePath) return null
   return invoke('import_project', { sourcePath })
@@ -322,7 +322,7 @@ export async function chooseAndImportProviderEnv() {
   const sourcePath = await open({
     multiple: false,
     directory: false,
-    title: '选择原 Web 项目 lumx-go/.env 文件'
+    title: '选择原 Web 项目 .env 文件'
   })
   if (!sourcePath) return null
   return invoke('import_provider_profiles_from_env', { sourcePath })
@@ -351,10 +351,10 @@ export async function chooseAndExportAsset(asset) {
     throw new Error('素材导出需要在桌面应用中使用')
   }
   const safeName =
-    String(asset?.fileName || 'LumxAI-素材')
+    String(asset?.fileName || 'rsclaw-素材')
       .replace(/[<>:"/\\|?*\u0000-\u001f]/g, '-')
       .replace(/[.\s]+$/g, '')
-      .slice(0, 120) || 'LumxAI-素材'
+      .slice(0, 120) || 'rsclaw-素材'
   const extension = safeName.includes('.')
     ? safeName
         .split('.')
@@ -384,7 +384,7 @@ export async function copyImageToClipboard(asset) {
 export function localAssetUrl(asset) {
   if (!asset?.absolutePath) return ''
   if (isElectronRuntime()) {
-    return `lumx-asset://local/${encodeURIComponent(asset.absolutePath)}`
+    return `rsclaw-asset://local/${encodeURIComponent(asset.absolutePath)}`
   }
   return ''
 }
@@ -660,17 +660,17 @@ export async function getAgentDraft(draftId) {
 
 export function onAgentEvent(listener) {
   if (!isElectronRuntime()) return () => {}
-  return window.lumx.onAgentEvent(listener)
+  return window.rsclaw.onAgentEvent(listener)
 }
 
 export async function onDesktopCloseRequested(listener) {
   if (!isElectronRuntime()) return () => {}
-  return window.lumx.onCloseRequested(() => listener({ preventDefault() {} }))
+  return window.rsclaw.onCloseRequested(() => listener({ preventDefault() {} }))
 }
 
 export async function closeDesktopWindow() {
   if (!isElectronRuntime()) return
-  return window.lumx.closeWindow()
+  return window.rsclaw.closeWindow()
 }
 
 function updatePreviewTask(id, transform) {
