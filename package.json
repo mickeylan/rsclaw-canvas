@@ -1,0 +1,92 @@
+{
+  "name": "rsclaw-canvas",
+  "version": "0.1.0",
+  "description": "AI Workflow Canvas - 基于 Vue 3 + Deep Agents 的无限画布，支持多节点工作流编排",
+  "author": "rsclaw",
+  "private": true,
+  "type": "module",
+  "main": "electron/main.mjs",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "electron:dev": "node electron/dev.mjs",
+    "electron:pack": "npm run build && electron-builder --dir",
+    "electron:build": "npm run build && electron-builder",
+    "electron:build:win": "npm run build && electron-builder --win nsis --x64 --config.electronDist=node_modules/electron/dist",
+    "electron:build:mac": "npm run build && electron-builder --mac dmg zip --universal",
+    "lint": "eslint src electron tests vite.config.js eslint.config.js",
+    "format": "prettier --write \"src/**/*.{js,vue,css}\" \"electron/**/*.{js,mjs,cjs}\" \"tests/**/*.js\" \"*.{js,json}\"",
+    "format:check": "prettier --check \"src/**/*.{js,vue,css}\" \"electron/**/*.{js,mjs,cjs}\" \"tests/**/*.js\" \"*.{js,json}\"",
+    "typecheck": "vue-tsc --noEmit -p jsconfig.json",
+    "test:unit": "node --test tests/*.test.js",
+    "check:frontend": "npm run lint && npm run format:check && npm run typecheck && npm run test:unit && npm run build",
+    "check:electron": "node --check electron/main.mjs && node --check electron/dev.mjs && node --check electron/provider-media.mjs && node --check electron/workers/core-worker.mjs && node --check electron/workers/agent-worker.mjs",
+    "check": "npm run check:frontend && npm run check:electron",
+    "preview": "vite preview",
+    "desktop:dev": "npm run electron:dev",
+    "desktop:build": "npm run electron:build"
+  },
+  "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
+    "@langchain/core": "1.2.4",
+    "@langchain/langgraph": "1.4.8",
+    "@langchain/langgraph-checkpoint": "1.1.2",
+    "@langchain/langgraph-sdk": "1.9.23",
+    "@vue-flow/background": "^1.3.2",
+    "@vue-flow/controls": "^1.1.3",
+    "@vue-flow/core": "^1.48.2",
+    "ant-design-vue": "^4.2.6",
+    "deepagents": "1.12.1",
+    "dompurify": "^3.4.13",
+    "fflate": "^0.8.2",
+    "langchain": "1.5.4",
+    "langsmith": "0.7.1",
+    "marked": "^18.0.7",
+    "pinia": "^3.0.4",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0",
+    "zod": "4.3.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "electron": "43.2.0",
+    "electron-builder": "26.15.3",
+    "eslint": "^10.8.0",
+    "eslint-plugin-vue": "^10.10.0",
+    "globals": "^17.9.0",
+    "prettier": "^3.9.6",
+    "typescript": "~5.9.3",
+    "unplugin-vue-components": "^32.0.0",
+    "vite": "^7.1.0",
+    "vue-tsc": "^3.3.9"
+  },
+  "build": {
+    "appId": "com.rsclaw.canvas",
+    "productName": "rsclaw-canvas",
+    "asar": true,
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico",
+      "electronLanguages": [
+        "zh-CN"
+      ]
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.productivity"
+    }
+  }
+}
